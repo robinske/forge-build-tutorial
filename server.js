@@ -1,41 +1,65 @@
-const WebSocket = require('ws');
-const wss = new WebSocket.Server({port: 8080});
+const WebSocket = require("ws");
+const OpenAI = require("openai");
+require("dotenv").config();
 
-wss.on('connection', (ws) => {
-  console.log('New client connected');
+const wss = new WebSocket.Server({ port: 8080 });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function aiResponse(prompt) {
+  let completion = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [
+      { role: "system", content: "You are a helpful assistant." },
+      {
+        role: "user",
+        content: prompt,
+      },
+    ],
+    store: true,
+  });
+  return completion.choices[0].message.content;
+}
+
+wss.on("connection", (ws) => {
+  console.log("New client connected");
 
   // Listener for call information and conversation
-  ws.on('message', (data) => {
+  ws.on("message", async (data) => {
     let message = JSON.parse(data);
 
     switch (message.type) {
-        case 'setup':
-            console.log(`Conversation setup initiated for number ending in **${message.from.slice(-2)}`);
-            console.log(`Call SID: ${message.callSid}`);
-            break;
-        case 'prompt':
-            console.log('Prompt: ', message.voicePrompt);
+      case "setup":
+        console.log(`Setup initiated for number **${message.from.slice(-2)}`);
+        console.log(`Call SID: ${message.callSid}`);
+        break;
+      case "prompt":
+        let prompt = message.voicePrompt;
+        console.log("Prompt: ", prompt);
 
-            // echo back the voice prompt
-            ws.send(JSON.stringify({
-                type: 'text',
-                token: message.voicePrompt,
-                last: false,
-              }));
-            break;
-        case 'error':
-            console.log('Error');
-            break;
-        default:
-            console.log('Unknown message type');
-            break;
+        let response = await aiResponse(prompt);
+        console.log("AI Response: ", response);
+
+        ws.send(
+          JSON.stringify({
+            type: "text",
+            token: response,
+            last: true,
+          })
+        );
+        break;
+      case "error":
+        console.log("Error");
+        break;
+      default:
+        console.log("Unknown message type");
+        break;
     }
   });
 
-  // Event listener for client disconnection
-  ws.on('close', () => {
-    console.log('Client has disconnected.');
+  // When call ends
+  ws.on("close", () => {
+    console.log("Client has disconnected.");
   });
 });
 
-console.log('WebSocket server is running on ws://localhost:8080');
+console.log("WebSocket server is running on wss://localhost:8080");
