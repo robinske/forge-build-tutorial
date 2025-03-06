@@ -1,3 +1,16 @@
+// run this file `node server.js`
+// run `ngrok http 8080`
+// replace the url below with your ngrok url
+// create twiml bin with the following
+// connect your phone number to this twiml bin
+// <?xml version="1.0" encoding="UTF-8"?>
+// <Response>
+//   <Connect>
+//     <ConversationRelay url="wss://cr.ngrok.pizza/" welcomeGreeting="Hi! Ask me anything!" />
+//   </Connect>
+// </Response>
+
+
 const WebSocket = require("ws");
 const OpenAI = require("openai");
 require("dotenv").config();
@@ -26,6 +39,7 @@ wss.on("connection", (ws) => {
   // Listener for call information and conversation
   ws.on("message", async (data) => {
     let message = JSON.parse(data);
+    console.log("Message type: ", message.type);
 
     switch (message.type) {
       case "setup":
@@ -46,6 +60,9 @@ wss.on("connection", (ws) => {
             last: true,
           })
         );
+        break;
+      case "interrupt":
+        console.log("Response interrupted");
         break;
       case "error":
         console.log("Error");
