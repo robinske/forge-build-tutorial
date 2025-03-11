@@ -1,17 +1,7 @@
 # Conversation Relay Demo
 
-1. run this file `node server.js`
 1. run `ngrok http 8080`
-1. replace the url in the twiml below with your ngrok url (leave the wss://)
-1. create twiml bin with the following
-1. connect your phone number to this twiml bin
-1. call your phone number to test
-
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<Response>
-  <Connect>
-    <ConversationRelay url="wss://<YOUR NGROK URL>/" welcomeGreeting="Hi! Ask me anything!" />
-  </Connect>
-</Response>
-```
+2. set your ngrok url and openai API key in the .env file
+3. run this file `node server`
+4. configure the voice webhook on your twilio phone number - set it to your ngrok url + `/twiml` e.g. https://abcdefgh.ngrok.io/twiml
+5. call your phone number to test
