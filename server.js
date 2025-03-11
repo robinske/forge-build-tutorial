@@ -1,12 +1,17 @@
-const WebSocket = require("ws");
-const OpenAI = require("openai");
-require("dotenv").config();
+import Fastify from "fastify";
+import fastifyWs from "@fastify/websocket";
+import OpenAI from "openai";
+import dotenv from "dotenv";
+dotenv.config();
 
-const wss = new WebSocket.Server({ port: 8080 });
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
+const PORT = process.env.PORT || 8080;
+const DOMAIN = process.env.NGROK_URL;
+const WS_URL = `wss://${DOMAIN}/ws`;
+const WELCOME_GREETING = "Hi! I am a voice assistant powered by Twilio and Open A I . Ask me anything!";
+const SYSTEM_PROMPT = "You are a helpful assistant. This conversation is being translated to voice, so answer carefully. When you respond, please spell out all numbers in english, for example twenty not 20. Do not include emojis in your responses. Do not include bullet points, asterisks, or special symbols.";
 const sessions = new Map();
 
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 async function aiResponse(messages) {
   let completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
@@ -16,67 +21,70 @@ async function aiResponse(messages) {
   return completion.choices[0].message.content;
 }
 
-wss.on("connection", (ws) => {
-  console.log("New client connected");
+const fastify = Fastify();
+fastify.register(fastifyWs);
+fastify.get("/twiml", async (request, reply) => {
+  reply.type("text/xml").send(
+    `<?xml version="1.0" encoding="UTF-8"?>
+    <Response>
+      <Connect>
+        <ConversationRelay url="${WS_URL}" welcomeGreeting="${WELCOME_GREETING}" />
+      </Connect>
+    </Response>`
+  );
+});
 
-  // Listener for call information and conversation
-  ws.on("message", async (data) => {
-    let message = JSON.parse(data);
-    console.log("Message type: ", message.type);
+fastify.register(async function (fastify) {
+  fastify.get("/ws", { websocket: true }, (ws, req) => {
+    ws.on("message", async (data) => {
+      const message = JSON.parse(data);
 
-    switch (message.type) {
-      case "setup":
-        let callSid = message.callSid;
-        console.log(
-          `Setup initiated for call from **${message.from.slice(-2)}`
-        );
-        console.log(`Call SID: ${callSid}`);
+      // Handle WebSocket messages by type
+      switch (message.type) {
+        case "setup":
+          const callSid = message.callSid;
+          console.log("Setup for call:", callSid);
+          ws.callSid = callSid;
+          sessions.set(callSid, [{ role: "system", content: SYSTEM_PROMPT }]);
+          break;
+        case "prompt":
+          console.log("Processing prompt:", message.voicePrompt);
+          const conversation = sessions.get(ws.callSid);
+          conversation.push({ role: "user", content: message.voicePrompt });
 
-        // Initialize conversation history for the new client
-        ws.callSid = callSid;
-        sessions.set(callSid, [
-          { role: "system", content: "You are a helpful assistant." },
-        ]);
-        break;
-      case "prompt":
-        let prompt = message.voicePrompt;
-        console.log("Prompt: ", prompt);
+          const response = await aiResponse(conversation);
+          conversation.push({ role: "assistant", content: response });
 
-        // Retrieve and update conversation history
-        let conversation = sessions.get(ws.callSid);
-        conversation.push({ role: "user", content: prompt });
+          ws.send(
+            JSON.stringify({
+              type: "text",
+              token: response,
+              last: true,
+            })
+          );
+          console.log("Sent response:", response);
+          break;
+        case "interrupt":
+          console.log("Handling interruption.");
+          break;
+        default:
+          console.warn("Unknown message type received:", message.type);
+          break;
+      }
+    });
 
-        let response = await aiResponse(conversation);
-        console.log("AI Response: ", response);
-
-        // Add AI response to conversation history
-        conversation.push({ role: "assistant", content: response });
-
-        ws.send(
-          JSON.stringify({
-            type: "text",
-            token: response,
-            last: true,
-          })
-        );
-        break;
-      case "interrupt":
-        console.log("Response interrupted: " + JSON.stringify(message));
-        break;
-      case "error":
-        console.log("Error");
-        break;
-      default:
-        console.log("Unknown message type");
-        break;
-    }
-  });
-
-  // Clean up conversation history when call ends
-  ws.on("close", () => {
-    console.log("Client has disconnected.");
-    sessions.delete(ws.callSid);
+    // Clean up conversation history when call ends
+    ws.on("close", () => {
+      console.log("WebSocket connection closed");
+      sessions.delete(ws.callSid);
+    });
   });
 });
 
-console.log("WebSocket server is running on wss://localhost:8080");
+try {
+  fastify.listen({ port: PORT });
+  console.log(`Server running at http://localhost:${PORT} and wss://${DOMAIN}/ws`);
+} catch (err) {
+  fastify.log.error(err);
+  process.exit(1);
+}
