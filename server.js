@@ -16,7 +16,6 @@ async function aiResponse(messages) {
   let completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: messages,
-    store: true,
   });
   return completion.choices[0].message.content;
 }
