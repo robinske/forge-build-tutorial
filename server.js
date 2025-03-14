@@ -39,7 +39,6 @@ fastify.register(async function (fastify) {
     ws.on("message", async (data) => {
       const message = JSON.parse(data);
 
-      // Handle WebSocket messages by type
       switch (message.type) {
         case "setup":
           const callSid = message.callSid;
@@ -73,7 +72,6 @@ fastify.register(async function (fastify) {
       }
     });
 
-    // Clean up conversation history when call ends
     ws.on("close", () => {
       console.log("WebSocket connection closed");
       sessions.delete(ws.callSid);
