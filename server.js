@@ -22,7 +22,7 @@ async function aiResponse(messages) {
 
 const fastify = Fastify();
 fastify.register(fastifyWs);
-fastify.get("/twiml", async (request, reply) => {
+fastify.all("/twiml", async (request, reply) => {
   reply.type("text/xml").send(
     `<?xml version="1.0" encoding="UTF-8"?>
     <Response>
