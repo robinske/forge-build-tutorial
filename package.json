@@ -1,7 +1,7 @@
 {
-  "name": "code",
+  "name": "Conversation Relay demo",
   "version": "1.0.0",
-  "main": "passkeys.js",
+  "main": "index.js",
   "directories": {
     "doc": "docs"
   },
@@ -14,7 +14,9 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@fastify/formbody": "^8.0.2",
     "@fastify/websocket": "^11.0.2",
+    "axios": "^1.8.4",
     "dotenv": "^16.4.7",
     "fastify": "^5.2.1",
     "openai": "^4.86.2"
