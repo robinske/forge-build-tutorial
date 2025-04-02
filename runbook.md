@@ -11,8 +11,8 @@
 
 ## Useful links
 
-* GitHub \- completed code: [https://github.com/robinske/cr-demo](https://github.com/robinske/cr-demo)  
-* Blog post \- step 1 / getting started: [https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay](https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay) 
+* GitHub \- completed code: [https://github.com/robinske/cr-demo/tree/forge](https://github.com/robinske/cr-demo/tree/forge)
+* Blog post \- detailed getting started guide: [https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay](https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay) 
 
 ### Step by step diffs
 | Step | Code diff | Complete file | How to test |
