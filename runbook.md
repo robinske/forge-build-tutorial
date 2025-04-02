@@ -15,8 +15,9 @@
 * Blog post \- step 1 / getting started: [https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay](https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay) 
 
 ### Step by step diffs
-| 1 \- Boilerplate |  | [Complete file](https://github.com/robinske/cr-demo/blob/forge-1/workshop-steps/index.js) |  |
+| Step | Code diff | Complete file | How to test |
 | :---- | :---- | :---- | :---- |
+| 1 \- Boilerplate |  | [Complete file](https://github.com/robinske/cr-demo/blob/forge-1/workshop-steps/index.js) |  |
 | 2 \- /twiml | [Code diff](https://github.com/robinske/cr-demo/compare/forge-1...forge-2) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-2/workshop-steps/index.js) |  |
 | 3 \- ws & OpenAI | [Code diff](https://github.com/robinske/cr-demo/compare/forge-2...forge-3) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-3/workshop-steps/index.js) | Test by asking anything\! |
 | 4 \- Conversation history | [Code diff](https://github.com/robinske/cr-demo/compare/forge-3...forge-4) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-4/workshop-steps/index.js) | Test by asking follow up questions \- e.g.: Who won the Oscar in 2009? What about 2010? |
