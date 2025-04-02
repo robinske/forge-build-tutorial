@@ -14,6 +14,7 @@
 * GitHub \- completed code: [https://github.com/robinske/cr-demo](https://github.com/robinske/cr-demo)  
 * Blog post \- step 1 / getting started: [https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay](https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay) 
 
+### Step by step diffs
 | 1 \- Boilerplate |  | [Complete file](https://github.com/robinske/cr-demo/blob/forge-1/workshop-steps/index.js) |  |
 | :---- | :---- | :---- | :---- |
 | 2 \- /twiml | [Code diff](https://github.com/robinske/cr-demo/compare/forge-1...forge-2) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-2/workshop-steps/index.js) |  |
