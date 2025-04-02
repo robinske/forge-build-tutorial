@@ -27,13 +27,6 @@
 
 ## Setup
 
-Overview of what we'll build:
-
-* Architecture diagram  
-* How CR works
-
-Project scaffolding
-
 * Create a new folder called **"conversation-relay"**
 
 ```
