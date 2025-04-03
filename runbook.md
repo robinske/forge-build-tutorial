@@ -30,7 +30,7 @@
 | 4 \- Conversation history | [Code diff](https://github.com/robinske/cr-demo/compare/forge-3...forge-4) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-4/workshop-steps/index.js) | Test by asking follow up questions \- e.g.: Who won the Oscar in 2009? What about 2010? |
 | 5 \- Streaming | [Code diff](https://github.com/robinske/cr-demo/compare/forge-4...forge-5) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-5/workshop-steps/index.js) | Test by prompting for a long answer \- e.g.: Tell me 10 things that happened in 2015 |
 | 6 \- Tool calling | [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-6/workshop-steps/index.js) | Test by asking for a programming joke |
-| 7 \- Interruption handling | [Code diff](https://github.com/robinske/cr-demo/compare/forge-6...forge-7) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-7/workshop-steps/index.js) | Test by asking for something like "name 10 Canadian Prime Ministers", interrupt the answer, and asking for how many it got through. |
+| 7 \- Interruption handling | [Code diff](https://github.com/robinske/cr-demo/compare/forge-6...forge-7) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-7/workshop-steps/index.js) | Test by asking for a story about something, and then interrupt it and ask how much of the story it got through. |
 
 ## Setup
 
@@ -370,39 +370,41 @@ Add a function to handle interrupts
 
 ```javascript
 function handleInterrupt(callSid, utteranceUntilInterrupt) {
-  const conversation = sessions.get(callSid);
+  let conversation = sessions.get(callSid);
 
-  let updatedConversation = [...conversation];
-
-  const interruptedIndex = updatedConversation.findIndex(
+  // Find the relevant assistant message
+  const interruptedIndex = conversation.findIndex(
     (message) =>
       message.role === "assistant" &&
-      message.content.includes(utteranceUntilInterrupt),
+      message.content.includes(utteranceUntilInterrupt)
   );
 
-  if (interruptedIndex !== -1) {
-    const interruptedMessage = updatedConversation[interruptedIndex];
-
-    const interruptPosition = interruptedMessage.content.indexOf(
-      utteranceUntilInterrupt,
-    );
-    const truncatedContent = interruptedMessage.content.substring(
-      0,
-      interruptPosition + utteranceUntilInterrupt.length,
-    );
-
-    updatedConversation[interruptedIndex] = {
-      ...interruptedMessage,
-      content: truncatedContent,
-    };
-
-    updatedConversation = updatedConversation.filter(
-      (message, index) =>
-        !(index > interruptedIndex && message.role === "assistant"),
-    );
+  // If there's no message to interrupt, exit early
+  if (interruptedIndex === -1) {
+    return;
   }
 
-  sessions.set(callSid, updatedConversation);
+  // Truncate message content at the interruption point
+  const interruptedMessage = conversation[interruptedIndex];
+  const interruptPosition = interruptedMessage.content.indexOf(
+    utteranceUntilInterrupt
+  );
+  conversation[interruptedIndex] = {
+    ...interruptedMessage,
+    content: interruptedMessage.content.slice(
+      0,
+      interruptPosition + utteranceUntilInterrupt.length
+    ),
+  };
+
+  // Remove assistant messages after the interrupted one
+  conversation = conversation.filter(
+    (message, index) =>
+      !(index > interruptedIndex && message.role === "assistant")
+  );
+
+  // Update the stored session data
+  sessions.set(callSid, conversation);
 }
 ```
 
@@ -415,7 +417,7 @@ case "interrupt":
   break;
 ```
 > [!TIP]
-> Test by asking for something like "name 10 Canadian Prime Ministers", interrupt the answer, and asking for how many it got through.
+> Test by asking for a story about something, and then interrupt and ask how much of the story it got through.
 
 ## Open build / Q\&A
 
