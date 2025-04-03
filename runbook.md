@@ -1,6 +1,7 @@
 # Forge ConversationRelay \- Runbook
 
 ## Pre-requisites
+*Please complete these steps prior to joining the workshop* 
 
 1. [Node.js](https://nodejs.org/en) installed on your machine  
 2. A Twilio phone number ([Sign up here](https://console.twilio.com/))  
@@ -15,6 +16,7 @@
 * Blog post \- detailed getting started guide: [https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay](https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay) 
 
 ### Step by step diffs
+*These will be covered in real time during the workshop*
 | Step | Code diff | Complete file | How to test |
 | :---- | :---- | :---- | :---- |
 | 1 \- Boilerplate |  | [Complete file](https://github.com/robinske/cr-demo/blob/forge-1/workshop-steps/index.js) |  |
