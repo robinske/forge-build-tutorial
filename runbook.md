@@ -5,11 +5,12 @@
 > Please complete these steps prior to joining the workshop
 
 1. [Node.js](https://nodejs.org/en) installed on your machine  
-2. A Twilio phone number ([Sign up here](https://console.twilio.com/))  
-3. Your code editor of choice (such as Visual Studio Code)  
-4. The [ngrok](https://ngrok.com/) tunneling service (or other tunneling service). Alternatively, a [fly.io](http://fly.io) account or other way to host a web socket server.  
-5. An [OpenAI Account](https://platform.openai.com/api-keys) to generate an API Key  
-6. A phone to place your outgoing call to Twilio
+2. A Twilio phone number ([Sign up here](https://console.twilio.com/))
+3. Enable Voice AI features in the [Twilio Console](http://twilio.com/console/voice/settings): Navigate to the Voice section, select **General** under **Settings**, and turn on the **Predictive and Generative AI/ML Features Addendum** in order to use ConversationRelay.
+4. Your code editor of choice (such as Visual Studio Code)  
+5. The [ngrok](https://ngrok.com/) tunneling service (or other tunneling service). Alternatively, a [fly.io](http://fly.io) account or other way to host a web socket server.  
+6. An [OpenAI Account](https://platform.openai.com/api-keys) to generate an API Key  
+7. A phone to place your outgoing call to Twilio
 
 ## Useful links
 
