@@ -1,7 +1,8 @@
 # Forge ConversationRelay \- Runbook
 
 ## Pre-requisites
-*Please complete these steps prior to joining the workshop* 
+> [!IMPORTANT]  
+> Please complete these steps prior to joining the workshop
 
 1. [Node.js](https://nodejs.org/en) installed on your machine  
 2. A Twilio phone number ([Sign up here](https://console.twilio.com/))  
@@ -12,11 +13,14 @@
 
 ## Useful links
 
+* [ConversationRelay documentation](https://www.twilio.com/docs/voice/twiml/connect/conversationrelay)
 * GitHub \- completed code: [https://github.com/robinske/cr-demo/tree/forge](https://github.com/robinske/cr-demo/tree/forge)
 * Blog post \- detailed getting started guide: [https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay](https://www.twilio.com/en-us/blog/integrate-openai-twilio-voice-using-conversationrelay) 
 
 ### Step by step diffs
-*These will be covered in real time during the workshop*
+> [!NOTE]  
+> These steps will be covered in real time during the workshop
+
 | Step | Code diff | Complete file | How to test |
 | :---- | :---- | :---- | :---- |
 | 1 \- Boilerplate |  | [Complete file](https://github.com/robinske/cr-demo/blob/forge-1/workshop-steps/index.js) |  |
@@ -124,7 +128,7 @@ async function aiResponse(messages) {
 }
 ```
 
-### \[Test it out\!\] buy a Twilio phone number 
+### \[Test it out\!\] with your Twilio phone number 
 
 Connect your ngrok URL (+ /twiml) to your Twilio Phone number.  
 <img width="1781" alt="Image" src="https://github.com/user-attachments/assets/24982387-bcc6-49bc-bcdc-2b3fbd0a2a97" />
@@ -174,6 +178,9 @@ messages.push({ role: "user", content: message.voicePrompt });
 const response = await aiResponse(messages);
 messages.push({ role: "assistant", content: response });
 ```
+
+> [!TIP]
+> Test conversation history by asking follow up questions \- e.g.: Who won the Oscar in 2009? What about 2010?
 
 ### 5\. Add streaming tokens
 
@@ -237,6 +244,8 @@ case "prompt":
  );
  break;
 ```
+> [!TIP]
+> Test the decreased latency by prompting for a long answer \- e.g.: Tell me 10 things that happened in 2015.
 
 ### 6\. Add tool calling
 
@@ -348,6 +357,9 @@ for (const toolCall of toolCalls) {
 }
 ```
 
+> [!TIP]
+> Test by asking for a programming joke.
+
 ### 7\. Add interruption handling
 
 3. [Code diff](https://github.com/robinske/cr-demo/compare/forge-6...forge-7)  
@@ -401,5 +413,9 @@ case "interrupt":
   handleInterrupt(ws.callSid, message.utteranceUntilInterrupt);
   break;
 ```
+> [!TIP]
+> Test by asking for a programming joke.
 
 ## Open build / Q\&A
+
+Try adding another tool, modifying the [TTS voice](https://www.twilio.com/docs/voice/twiml/connect/conversationrelay#additional-tts-voices-available-for-conversationrelay) or [other attributes](https://www.twilio.com/docs/voice/twiml/connect/conversationrelay#conversationrelay-attributes). Use this opportunity to ask questions.
