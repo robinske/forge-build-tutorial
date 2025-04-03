@@ -414,7 +414,7 @@ case "interrupt":
   break;
 ```
 > [!TIP]
-> Test by asking for a programming joke.
+> Test by asking for something like "name 10 Canadian Prime Ministers", interrupt the answer, and asking for how many it got through.
 
 ## Open build / Q\&A
 
