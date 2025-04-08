@@ -117,7 +117,7 @@ Call out to OpenAI API:
 ```javascript
 import OpenAI from "openai";
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-async function aiResponse(messages) {
+async function aiResponse(prompt) {
   let completion = await openai.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
