@@ -1,5 +1,6 @@
 import Fastify from "fastify";
 import fastifyWs from "@fastify/websocket";
+import fastifyFormBody from "@fastify/formbody";
 import OpenAI from "openai";
 import dotenv from "dotenv";
 dotenv.config();
@@ -7,8 +8,10 @@ dotenv.config();
 const PORT = process.env.PORT || 8080;
 const DOMAIN = process.env.NGROK_URL;
 const WS_URL = `wss://${DOMAIN}/ws`;
-const WELCOME_GREETING = "Hi! I am a voice assistant powered by Twilio and Open A I . Ask me anything!";
-const SYSTEM_PROMPT = "You are a helpful assistant. This conversation is being translated to voice, so answer carefully. When you respond, please spell out all numbers, for example twenty not 20. Do not include emojis in your responses. Do not include bullet points, asterisks, or special symbols.";
+const WELCOME_GREETING =
+  "Hi! I am a voice assistant powered by Twilio and Open A I . Ask me anything!";
+const SYSTEM_PROMPT =
+  "You are a helpful assistant. This conversation is being translated to voice, so answer carefully. When you respond, please spell out all numbers, for example twenty not 20. Do not include emojis in your responses. Do not include bullet points, asterisks, or special symbols.";
 const sessions = new Map();
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
@@ -22,6 +25,7 @@ async function aiResponse(messages) {
 
 const fastify = Fastify();
 fastify.register(fastifyWs);
+fastify.register(fastifyFormBody);
 fastify.all("/twiml", async (request, reply) => {
   reply.type("text/xml").send(
     `<?xml version="1.0" encoding="UTF-8"?>
@@ -80,7 +84,9 @@ fastify.register(async function (fastify) {
 
 try {
   fastify.listen({ port: PORT });
-  console.log(`Server running at http://localhost:${PORT} and wss://${DOMAIN}/ws`);
+  console.log(
+    `Server running at http://localhost:${PORT} and wss://${DOMAIN}/ws`
+  );
 } catch (err) {
   fastify.log.error(err);
   process.exit(1);
