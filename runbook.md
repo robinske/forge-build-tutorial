@@ -389,9 +389,9 @@ https://console.twilio.com/us1/develop/conversational-intelligence/services
 
 Create a custom operator called "Pet name extractor":
 
-**Prompt** Extract the names of all pets mentioned (such as dogs, cats, or other animals). Only return the pet names, not the owner's name or other information.
+**Prompt**: Extract the names of all pets mentioned (such as dogs, cats, or other animals). Only return the pet names, not the owner's name or other information.
 
-**Training examples**
+**Training examples**:
 | Example conversation | Expected output results | 
 | ---------------------|-------------------------|
 | Hi, I'm calling to schedule an appointment for Max - account is under Erica Jones | Max |
@@ -401,7 +401,7 @@ Create a custom operator called "Pet name extractor":
 | Can I schedule something for mister mcstuffins? | Mr. McStuffins |
 
 
-Add your intelligence service SID to your TWIML in the index.js file:
+Add your intelligence service SID to your TwiIML in the index.js file:
 
 ```diff
 <?xml version="1.0" encoding="UTF-8"?>
@@ -416,6 +416,9 @@ Add your intelligence service SID to your TWIML in the index.js file:
 </Response>
 ```
 
+> [!TIP]
+> Make another call and explore your transcripts in the Console!
+
 ## Open build / Q\&A
 
-Try adding another tool, modifying the [TTS voice](https://www.twilio.com/docs/voice/twiml/connect/conversationrelay#additional-tts-voices-available-for-conversationrelay) or [other attributes](https://www.twilio.com/docs/voice/twiml/connect/conversationrelay#conversationrelay-attributes). Use this opportunity to ask questions.
+Try adding another tool, creating another custom operator, modifying the [TTS voice](https://www.twilio.com/docs/voice/twiml/connect/conversationrelay#additional-tts-voices-available-for-conversationrelay) or [other attributes](https://www.twilio.com/docs/voice/twiml/connect/conversationrelay#conversationrelay-attributes). Use this opportunity to ask questions.
