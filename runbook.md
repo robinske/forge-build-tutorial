@@ -29,8 +29,8 @@
 | 3 \- ws & OpenAI | [Code diff](https://github.com/robinske/cr-demo/compare/forge-2...forge-3) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-3/workshop-steps/index.js) | [Connect your phone number](https://github.com/robinske/cr-demo/blob/forge/runbook.md#test-it-out-with-your-twilio-phone-number) and test by asking anything\! |
 | 4 \- Conversation history | [Code diff](https://github.com/robinske/cr-demo/compare/forge-3...forge-4) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-4/workshop-steps/index.js) | Test by asking follow up questions \- e.g.: Who won the Oscar in 2009? What about 2010? |
 | 5 \- Streaming | [Code diff](https://github.com/robinske/cr-demo/compare/forge-4...forge-5) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-5/workshop-steps/index.js) | Test by prompting for a long answer \- e.g.: Tell me 10 things that happened in 2015 |
-| 6 \- Tool calling | [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-6/workshop-steps/index.js) | Test by asking for a programming joke |
-| 7 \- Interruption handling | [Code diff](https://github.com/robinske/cr-demo/compare/forge-6...forge-7) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-7/workshop-steps/index.js) | Test by asking for a story about something, and then interrupt it and ask how much of the story it got through. |
+| 6 \- Tool calling | [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6b) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-6b/workshop-steps/index.js) | Test by trying to make an appointment at a fictional Veterinary Clinic |
+| 7 \- Conversational Intelligence | [Code diff](https://github.com/robinske/cr-demo/compare/forge-6b...forge-7b) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-7b/workshop-steps/index.js) | Set up custom operators in the Console and test against your transcripts. |
 
 ## Setup
 
@@ -250,8 +250,8 @@ case "prompt":
 
 ### 6\. Add tool calling
 
-1. [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6)  
-2. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-6/workshop-steps/index.js)
+1. [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6b)  
+2. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-6b/workshop-steps/index.js)
 
 Install axios so we can call an API
 
@@ -259,15 +259,21 @@ Install axios so we can call an API
 npm install axios
 ```
 
-Update the SYSTEM\_PROMPT with instructions for how to handle tool calling:
+We're going to introduce a fictional veterinary clinic into our demo application. Update the WELCOME\_GREETING and SYSTEM\_PROMPT with instructions for how to handle tool calling to book an appointment:
 
 ```javascript
-const SYSTEM_PROMPT = `You are a helpful assistant. This conversation is being translated to voice, so answer carefully.
-  When you respond, please spell out all numbers, for example twenty not 20. Do not include emojis in your responses. Do not include bullet points, asterisks, or special symbols.
-  You should use the 'get_programming_joke' function only when the user is asking for a programming joke (or a very close prompt, such as developer or software engineering joke). For other requests, including other types of jokes, you should use your own knowledge.`;
+const WELCOME_GREETING =
+  "Hi! Thank you for calling Wiggles Veterinary. How can I help you today?";
+const SYSTEM_PROMPT = `You are a helpful assistant for a veterinary clinic, so you will be asked about animal care, appointments, and other related topics.
+  This conversation is being translated to voice, so answer carefully.
+  When you respond, please spell out all numbers, for example twenty not 20. Do not include emojis in your responses. 
+  Do not include bullet points, asterisks, or special symbols.
+    
+  Make sure you get the pet's name, the owner's name, and the type of animal (dog, cat, etc.) if relevant.
+  If someone asks for an appointment call the "get_appointments" function to fetch appointment options.`;
 ```
 
-Add functions to fetch a joke:
+Add tool definition and a function to fetch available appointments:
 
 ```javascript
 import axios from "axios";
@@ -275,91 +281,102 @@ const tools = [
   {
     type: "function",
     function: {
-      name: "get_programming_joke",
-      description: "Fetches a programming joke",
+      name: "find_appointments",
+      description:
+        "Find available appointments based on user preferences, such as mornings or a specific week.",
       parameters: {
         type: "object",
-        properties: {},
-        required: [],
-        additionalProperties: false,
+        properties: {
+          preferences: {
+            type: "string",
+            description:
+              "Preferences for appointment search, e.g., 'mornings, week of june ninth'.",
+          },
+        },
+        required: ["preferences"],
       },
-      strict: true,
     },
   },
 ];
 
-async function getJoke() {
-  // Use jokeapi.dev to fetch a clean joke
+async function getAppointments(preferences) {
   const response = await axios.get(
-    "https://v2.jokeapi.dev/joke/Programming?safe-mode"
+    `https://appointment-finder-4175.twil.io/appointments?preferences=${encodeURIComponent(
+      preferences
+    )}`
   );
   const data = response.data;
-  return data.type === "single"
-    ? data.joke
-    : `${data.setup} ... ${data.delivery}`;
+  return data.availableAppointments
+    .map((appointment) => appointment.displayTime)
+    .join(", ");
 }
-
-const toolFunctions = {
-  get_programming_joke: async () => getJoke(),
-};
 ```
 
 Add a parameter for tools when you call the OpenAI chat completions API:
 
-```javascript
+```diff
 const stream = await openai.chat.completions.create({
    model: "gpt-4o-mini",
    messages: messages,
    stream: true,
-   tools: tools,
++  tools: tools,
 });
 ```
 
-After const content \= …, add the code to fetch tools and respond:
+After `const assistantSegments = ...`, add an object to track tool calls. Because we're streaming the response, we need to build up the tokens for our function parameters ([learn more](https://platform.openai.com/docs/guides/function-calling?api-mode=chat#streaming)):
 
 ```javascript
+const finalToolCalls = {};
+```
+
+After `assistantSegments.push(content);`, add the code to fetch tools and respond:
+
+```javascript
+// Call functions if tool calls are present
 const toolCalls = chunk.choices[0].delta.tool_calls || [];
+const finishReason = chunk.choices[0].finish_reason;
 
+// Accumulate function arguments
+// See: https://platform.openai.com/docs/guides/function-calling?api-mode=chat#streaming
 for (const toolCall of toolCalls) {
- const toolName = toolCall.function.name;
- const toolFn = toolFunctions[toolName];
+  const { index } = toolCall;
 
- if (toolFn) {
-   const toolResponse = await toolFn();
+  if (!finalToolCalls[index]) {
+    finalToolCalls[index] = toolCall;
+  }
 
-   // Append tool call request and the result with the "tool" role
-   messages.push({
-     role: "assistant",
-     tool_calls: [
-       {
-         id: toolCall.id,
-         function: {
-           name: toolName,
-           arguments: "{}",
-         },
-         type: "function",
-       },
-     ],
-   });
+  finalToolCalls[index].function.arguments += toolCall.function.arguments;
+}
 
-   messages.push({
-     role: "tool",
-     tool_call_id: toolCall.id,
-     content: toolResponse,
-   });
+if (finishReason === "tool_calls") {
+  for (const toolCallIdx in finalToolCalls) {
+    const toolCall = finalToolCalls[toolCallIdx];
+    try {
+      const parsedArgs = JSON.parse(toolCall.function.arguments);
+      console.log("Calling tool:", toolCall.function.name, parsedArgs);
+      const result = await getAppointments(parsedArgs.preferences);
+      const toolResponse =
+        "We found the following appointment options: " + result;
 
-   // Send the completed tool response to the client
-   ws.send(
-     JSON.stringify({ type: "text", token: toolResponse, last: true })
-   );
-   assistantSegments.push(toolResponse);
-   console.log(`Fetched ${toolName}:`, toolResponse);
- }
+      ws.send(
+        JSON.stringify({
+          type: "text",
+          token: toolResponse,
+          last: false,
+        })
+      );
+      console.log(toolResponse);
+
+      assistantSegments.push(toolResponse);
+    } catch (err) {
+      console.error("Error processing tool call:", err);
+    }
+  }
 }
 ```
 
 > [!TIP]
-> Test by asking for a programming joke.
+> Test by trying to make an appointment for your (real or fictional) pet.
 
 ### 7\. Add interruption handling
 
