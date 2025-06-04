@@ -378,63 +378,43 @@ if (finishReason === "tool_calls") {
 > [!TIP]
 > Test by trying to make an appointment for your (real or fictional) pet.
 
-### 7\. Add interruption handling
+### 7\. Add Conversational Intelligence
 
-3. [Code diff](https://github.com/robinske/cr-demo/compare/forge-6...forge-7)  
-4. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-7/workshop-steps/index.js)
+3. [Code diff](https://github.com/robinske/cr-demo/compare/forge-6b...forge-7b)  
+4. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-7b/workshop-steps/index.js)
 
-Add a function to handle interrupts
+Create an intelligence service in the Twilio Console
 
-```javascript
-function handleInterrupt(callSid, utteranceUntilInterrupt) {
-  let conversation = sessions.get(callSid);
+https://console.twilio.com/us1/develop/conversational-intelligence/services
 
-  // Find the relevant assistant message
-  const interruptedIndex = conversation.findIndex(
-    (message) =>
-      message.role === "assistant" &&
-      message.content.includes(utteranceUntilInterrupt)
-  );
+Create a custom operator called "Pet name extractor":
 
-  // If there's no message to interrupt, exit early
-  if (interruptedIndex === -1) {
-    return;
-  }
+**Prompt** Extract the names of all pets mentioned (such as dogs, cats, or other animals). Only return the pet names, not the owner's name or other information.
 
-  // Truncate message content at the interruption point
-  const interruptedMessage = conversation[interruptedIndex];
-  const interruptPosition = interruptedMessage.content.indexOf(
-    utteranceUntilInterrupt
-  );
-  conversation[interruptedIndex] = {
-    ...interruptedMessage,
-    content: interruptedMessage.content.slice(
-      0,
-      interruptPosition + utteranceUntilInterrupt.length
-    ),
-  };
+**Training examples**
+| Example conversation | Expected output results | 
+| ---------------------|-------------------------|
+| Hi, I'm calling to schedule an appointment for Max - account is under Erica Jones | Max |
+| I have a question about tuna's shots | Tuna |
+| We noticed that pepper is limping, do we need to bring her in? | Pepper |
+| Wanted to change the appointment for Sam and Frodo | Sam, Frodo |
+| Can I schedule something for mister mcstuffins? | Mr. McStuffins |
 
-  // Remove assistant messages after the interrupted one
-  conversation = conversation.filter(
-    (message, index) =>
-      !(index > interruptedIndex && message.role === "assistant")
-  );
 
-  // Update the stored session data
-  sessions.set(callSid, conversation);
-}
+Add your intelligence service SID to your TWIML in the index.js file:
+
+```diff
+<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+  <Connect>
+    <ConversationRelay 
+      url="${WS_URL}"
+      welcomeGreeting="${WELCOME_GREETING}"
++     intelligenceService="GAxxxxxx"
+    />
+  </Connect>
+</Response>
 ```
-
-Add case statement for "interrupt" messages:
-
-```javascript
-case "interrupt":
-  console.log("Handling interruption; last utterance: ", message.utteranceUntilInterrupt);
-  handleInterrupt(ws.callSid, message.utteranceUntilInterrupt);
-  break;
-```
-> [!TIP]
-> Test by asking for a story about something, and then interrupt and ask how much of the story it got through.
 
 ## Open build / Q\&A
 
