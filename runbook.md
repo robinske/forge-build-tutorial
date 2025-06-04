@@ -380,8 +380,8 @@ if (finishReason === "tool_calls") {
 
 ### 7\. Add Conversational Intelligence
 
-3. [Code diff](https://github.com/robinske/cr-demo/compare/forge-6b...forge-7b)  
-4. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-7b/workshop-steps/index.js)
+1. [Code diff](https://github.com/robinske/cr-demo/compare/forge-6b...forge-7b)  
+2. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-7b/workshop-steps/index.js)
 
 Create an intelligence service in the Twilio Console
 
