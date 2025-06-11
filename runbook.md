@@ -37,7 +37,7 @@
 * Create a new folder called **"conversation-relay"**
 
 ```
-mdkir conversation-relay && cd conversation-relay
+mkdir conversation-relay && cd conversation-relay
 ```
 
 * Node project setup:
