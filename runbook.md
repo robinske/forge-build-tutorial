@@ -92,6 +92,7 @@ reply.type("text/xml").send(
 Process incoming messages:
 
 ```javascript
+const message = JSON.parse(data);
 switch (message.type) {
   case "prompt":
     console.log("Processing prompt:", message.voicePrompt);
