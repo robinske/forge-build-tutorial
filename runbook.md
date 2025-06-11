@@ -271,7 +271,8 @@ const SYSTEM_PROMPT = `You are a helpful assistant for a veterinary clinic, so y
   Do not include bullet points, asterisks, or special symbols.
     
   Make sure you get the pet's name, the owner's name, and the type of animal (dog, cat, etc.) if relevant.
-  If someone asks for an appointment call the "get_appointments" function to fetch appointment options.`;
+  If someone asks for an appointment call the "get_appointments" function to fetch appointment options.
+  Do not call the function if someone confirms an appointment, just say "Great! We have you scheduled for that time."`;
 ```
 
 Add tool definition and a function to fetch available appointments:
