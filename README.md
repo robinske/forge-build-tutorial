@@ -8,7 +8,7 @@ To use the app, you will need:
 
 - **Node.js 23.9.0**: Download from [here](https://nodejs.org/). Other versions may work, but I tested with this one.
 - **A Twilio Account**: Sign up for a free trial [here](https://www.twilio.com/try-twilio).
-- **A Twilio Number with Voice Capabilities**: [Instructions to purchase a number](https://support.twilio.com/hc/en-us/articles/223180928-How-to-Buy-a-Twilio-Phone-Number).
+- **A Twilio Number with Voice Capabilities**: [Instructions to purchase a number](https://help.twilio.com/articles/223135247-How-to-Search-for-and-Buy-a-Twilio-Phone-Number-from-Console).
 - **An Open AI Account and API Key**: Visit Open AI's platform [here](https://platform.openai.com/api-keys) for more information.
 
 ## Setup
