@@ -29,8 +29,8 @@
 | 3 \- ws & OpenAI | [Code diff](https://github.com/robinske/cr-demo/compare/forge-2...forge-3) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-3/workshop-steps/index.js) | [Connect your phone number](https://github.com/robinske/cr-demo/blob/forge/runbook.md#test-it-out-with-your-twilio-phone-number) and test by asking anything\! |
 | 4 \- Conversation history | [Code diff](https://github.com/robinske/cr-demo/compare/forge-3...forge-4) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-4/workshop-steps/index.js) | Test by asking follow up questions \- e.g.: Who won the Oscar in 2009? What about 2010? |
 | 5 \- Streaming | [Code diff](https://github.com/robinske/cr-demo/compare/forge-4...forge-5) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-5/workshop-steps/index.js) | Test by prompting for a long answer \- e.g.: Tell me 10 things that happened in 2015 |
-| 6 \- Tool calling | [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6b) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-6b/workshop-steps/index.js) | Test by trying to make an appointment at a fictional Veterinary Clinic |
-| 7 \- Conversational Intelligence | [Code diff](https://github.com/robinske/cr-demo/compare/forge-6b...forge-7b) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-7b/workshop-steps/index.js) | Set up custom operators in the Console and test against your transcripts. |
+| 6 \- Tool calling | [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-6/workshop-steps/index.js) | Test by trying to make an appointment at a fictional Veterinary Clinic |
+| 7 \- Conversational Intelligence | [Code diff](https://github.com/robinske/cr-demo/compare/forge-6...forge-7) | [Complete file](https://github.com/robinske/cr-demo/blob/forge-7/workshop-steps/index.js) | Set up custom operators in the Console and test against your transcripts. |
 
 ## Setup
 
@@ -251,8 +251,8 @@ case "prompt":
 
 ### 6\. Add tool calling
 
-1. [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6b)  
-2. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-6b/workshop-steps/index.js)
+1. [Code diff](https://github.com/robinske/cr-demo/compare/forge-5...forge-6)  
+2. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-6/workshop-steps/index.js)
 
 Install axios so we can call an API
 
@@ -382,8 +382,8 @@ if (finishReason === "tool_calls") {
 
 ### 7\. Add Conversational Intelligence
 
-1. [Code diff](https://github.com/robinske/cr-demo/compare/forge-6b...forge-7b)  
-2. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-7b/workshop-steps/index.js)
+1. [Code diff](https://github.com/robinske/cr-demo/compare/forge-6...forge-7)  
+2. [Code file to this point](https://github.com/robinske/cr-demo/blob/forge-7/workshop-steps/index.js)
 
 Create an intelligence service in the Twilio Console
 
