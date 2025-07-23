@@ -52,7 +52,7 @@ Edit the .env file and input your Open AI API key in `OPENAI_API_KEY`. Add your 
 Start the development server:
 
 ```bash
-node server.js
+node index.js
 ```
 
 ## Run and test the app
