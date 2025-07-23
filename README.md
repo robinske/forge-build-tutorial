@@ -10,7 +10,7 @@ To use the app, you will need:
 
 1. **[Node.js](https://nodejs.org/en)** installed on your machine (tested with v23.9.0)
 2. **A Twilio Account**: [Sign up for a free trial](https://www.twilio.com/try-twilio)
-3. **A Twilio Phone Number with Voice Capabilities**: [Instructions to purchase a number](https://support.twilio.com/hc/en-us/articles/223180928-How-to-Buy-a-Twilio-Phone-Number)
+3. **A Twilio Phone Number with Voice Capabilities**: [Instructions to purchase a number](https://help.twilio.com/articles/223135247-How-to-Search-for-and-Buy-a-Twilio-Phone-Number-from-Console)
 4. **Enable Voice AI features** in the [Twilio Console](http://twilio.com/console/voice/settings): Navigate to the Voice section, select **General** under **Settings**, and turn on the **Predictive and Generative AI/ML Features Addendum** to use ConversationRelay
 5. **Your code editor of choice** (such as Visual Studio Code)
 6. **The [ngrok](https://ngrok.com/) tunneling service** (or other tunneling service). Alternatively, a [fly.io](http://fly.io) account or other way to host a web socket server
