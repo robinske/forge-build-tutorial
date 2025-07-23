@@ -2,6 +2,25 @@
 
 This application demonstrates how to use Node.js, [Twilio Voice](https://www.twilio.com/docs/voice) and [ConversationRelay](https://www.twilio.com/docs/voice/twiml/connect/conversationrelay), and the [Open AI API](https://docs.anthropic.com) to create a voice assistant that can engage in two-way conversations over a phone call. Other branches in this repository demonstrate how to add more advanced features such as streaming, interruption handling, and tool/function calling.
 
+## Self-Guided Learning
+
+This repository is designed as an educational resource with incremental learning branches. If you want to learn how to build this application step-by-step outside of a workshop setting:
+
+1. **Start with the [RUNBOOK.md](./RUNBOOK.md)** - This contains a complete step-by-step tutorial with code diffs and explanations
+2. **Follow the forge branches** - Each branch (`forge-1` through `forge-7`) represents a complete step in the tutorial:
+   - `forge-1`: Basic boilerplate setup
+   - `forge-2`: TwiML endpoint configuration  
+   - `forge-3`: WebSocket server and OpenAI integration
+   - `forge-4`: Conversation history tracking
+   - `forge-5`: Streaming responses for reduced latency
+   - `forge-6`: Tool calling for external API integration
+   - `forge-7`: Conversational Intelligence integration
+
+3. **Use the code diffs** - The runbook includes GitHub compare links to see exactly what changes between each step
+4. **Test as you go** - Each step includes specific testing instructions to verify your implementation
+
+This approach allows you to understand not just the final result, but how each feature builds upon the previous ones.
+
 ## Prerequisites
 
 To use the app, you will need:
